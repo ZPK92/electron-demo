@@ -1,8 +1,7 @@
-const { contextBridge } = require('electron')
+const { contextBridge, ipcRenderer } = require('electron')
 
-contextBridge.exposeInMainWorld('versions', {
-  node: () => process.versions.node,
-  chrome: () => process.versions.chrome,
-  electron: () => process.versions.electron
-  // we can also expose variables, not just functions
+contextBridge.exposeInMainWorld('electronAPI', {
+  cancelBluetoothRequest: (callback) => ipcRenderer.send('cancel-bluetooth-request', callback),
+  bluetoothPairingRequest: (callback) => ipcRenderer.on('bluetooth-pairing-request', callback),
+  bluetoothPairingResponse: (response) => ipcRenderer.send('bluetooth-pairing-response', response)
 })
